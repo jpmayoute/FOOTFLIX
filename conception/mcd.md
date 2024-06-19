@@ -14,9 +14,9 @@ is of nationality, 11 Player, 0N Country
 
 :
 statistical, 0N Player, 0N Stats
-Player : fistname, lastname, date of birth, picture
+Player : fistname, lastname, date of birth, player_picture
 played, 1N Player, 0N Club
-Club : club_name, year
+Club : club_name, club_year
 
 number of times, 0N Stats, 0N number
 Stats : stats-name
@@ -26,7 +26,8 @@ Position : position_name
 
 Number : number
 number of titles, 0N Palmares, 0N Number
-Palmares : title, year
+Palmares : title, palmares_year
 :
 :
+
 
