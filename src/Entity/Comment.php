@@ -20,6 +20,10 @@ class Comment
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $content = null;
 
+    #[ORM\ManyToOne(inversedBy: 'comments')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Player $player = null;
+
     public function getId(): ?int
     {
         return $this->id;
@@ -45,6 +49,18 @@ class Comment
     public function setContent(?string $content): static
     {
         $this->content = $content;
+
+        return $this;
+    }
+
+    public function getPlayer(): ?Player
+    {
+        return $this->player;
+    }
+
+    public function setPlayer(?Player $player): static
+    {
+        $this->player = $player;
 
         return $this;
     }
