@@ -29,22 +29,30 @@ class Player
     private ?string $player_picture = null;
 
     /**
+     * @var Collection<int, Goals>
+     */
+    #[ORM\ManyToMany(targetEntity: Goals::class, inversedBy: 'players')]
+    private Collection $goals;
+
+    /**
+     * @var Collection<int, DecisifPass>
+     */
+    #[ORM\ManyToMany(targetEntity: DecisifPass::class, inversedBy: 'players')]
+    private Collection $decisif_pass;
+
+    #[ORM\ManyToOne(inversedBy: 'players')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Country $country = null;
+
+    /**
      * @var Collection<int, Comment>
      */
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'player')]
     private Collection $comments;
 
-    /**
-     * @var Collection<int, Palmares>
-     */
-    #[ORM\ManyToMany(targetEntity: Palmares::class, inversedBy: 'players')]
-    private Collection $palmares;
-
-    /**
-     * @var Collection<int, Stats>
-     */
-    #[ORM\ManyToMany(targetEntity: Stats::class, inversedBy: 'players')]
-    private Collection $stats;
+    #[ORM\ManyToOne(inversedBy: 'players')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Position $position = null;
 
     /**
      * @var Collection<int, Club>
@@ -52,20 +60,19 @@ class Player
     #[ORM\ManyToMany(targetEntity: Club::class, inversedBy: 'players')]
     private Collection $clubs;
 
-    #[ORM\ManyToOne(inversedBy: 'players')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Country $country = null;
-
-    #[ORM\ManyToOne(inversedBy: 'players')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Position $position = null;
+    /**
+     * @var Collection<int, PlayerClubYear>
+     */
+    #[ORM\ManyToMany(targetEntity: PlayerClubYear::class, inversedBy: 'players')]
+    private Collection $player_club_year;
 
     public function __construct()
     {
+        $this->goals = new ArrayCollection();
+        $this->decisif_pass = new ArrayCollection();
         $this->comments = new ArrayCollection();
-        $this->palmares = new ArrayCollection();
-        $this->stats = new ArrayCollection();
         $this->clubs = new ArrayCollection();
+        $this->player_club_year = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -122,6 +129,66 @@ class Player
     }
 
     /**
+     * @return Collection<int, Goals>
+     */
+    public function getGoals(): Collection
+    {
+        return $this->goals;
+    }
+
+    public function addGoal(Goals $goal): static
+    {
+        if (!$this->goals->contains($goal)) {
+            $this->goals->add($goal);
+        }
+
+        return $this;
+    }
+
+    public function removeGoal(Goals $goal): static
+    {
+        $this->goals->removeElement($goal);
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, DecisifPass>
+     */
+    public function getDecisifPass(): Collection
+    {
+        return $this->decisif_pass;
+    }
+
+    public function addDecisifPass(DecisifPass $decisifPass): static
+    {
+        if (!$this->decisif_pass->contains($decisifPass)) {
+            $this->decisif_pass->add($decisifPass);
+        }
+
+        return $this;
+    }
+
+    public function removeDecisifPass(DecisifPass $decisifPass): static
+    {
+        $this->decisif_pass->removeElement($decisifPass);
+
+        return $this;
+    }
+
+    public function getCountry(): ?Country
+    {
+        return $this->country;
+    }
+
+    public function setCountry(?Country $country): static
+    {
+        $this->country = $country;
+
+        return $this;
+    }
+
+    /**
      * @return Collection<int, Comment>
      */
     public function getComments(): Collection
@@ -151,50 +218,14 @@ class Player
         return $this;
     }
 
-    /**
-     * @return Collection<int, Palmares>
-     */
-    public function getPalmares(): Collection
+    public function getPosition(): ?Position
     {
-        return $this->palmares;
+        return $this->position;
     }
 
-    public function addPalmare(Palmares $palmare): static
+    public function setPosition(?Position $position): static
     {
-        if (!$this->palmares->contains($palmare)) {
-            $this->palmares->add($palmare);
-        }
-
-        return $this;
-    }
-
-    public function removePalmare(Palmares $palmare): static
-    {
-        $this->palmares->removeElement($palmare);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Stats>
-     */
-    public function getStats(): Collection
-    {
-        return $this->stats;
-    }
-
-    public function addStat(Stats $stat): static
-    {
-        if (!$this->stats->contains($stat)) {
-            $this->stats->add($stat);
-        }
-
-        return $this;
-    }
-
-    public function removeStat(Stats $stat): static
-    {
-        $this->stats->removeElement($stat);
+        $this->position = $position;
 
         return $this;
     }
@@ -223,26 +254,26 @@ class Player
         return $this;
     }
 
-    public function getCountry(): ?Country
+    /**
+     * @return Collection<int, PlayerClubYear>
+     */
+    public function getPlayerClubYear(): Collection
     {
-        return $this->country;
+        return $this->player_club_year;
     }
 
-    public function setCountry(?Country $country): static
+    public function addPlayerClubYear(PlayerClubYear $playerClubYear): static
     {
-        $this->country = $country;
+        if (!$this->player_club_year->contains($playerClubYear)) {
+            $this->player_club_year->add($playerClubYear);
+        }
 
         return $this;
     }
 
-    public function getPosition(): ?Position
+    public function removePlayerClubYear(PlayerClubYear $playerClubYear): static
     {
-        return $this->position;
-    }
-
-    public function setPosition(?Position $position): static
-    {
-        $this->position = $position;
+        $this->player_club_year->removeElement($playerClubYear);
 
         return $this;
     }

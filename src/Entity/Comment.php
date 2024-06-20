@@ -15,13 +15,12 @@ class Comment
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?int $code_rating = null;
+    private ?int $Code_rating = null;
 
-    #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
-    #[ORM\JoinColumn(nullable: false)]
     private ?Player $player = null;
 
     public function getId(): ?int
@@ -31,12 +30,12 @@ class Comment
 
     public function getCodeRating(): ?int
     {
-        return $this->code_rating;
+        return $this->Code_rating;
     }
 
-    public function setCodeRating(int $code_rating): static
+    public function setCodeRating(int $Code_rating): static
     {
-        $this->code_rating = $code_rating;
+        $this->Code_rating = $Code_rating;
 
         return $this;
     }
@@ -46,7 +45,7 @@ class Comment
         return $this->content;
     }
 
-    public function setContent(?string $content): static
+    public function setContent(string $content): static
     {
         $this->content = $content;
 

@@ -2,39 +2,39 @@
 
 namespace App\Repository;
 
-use App\Entity\Stats;
+use App\Entity\Goals;
 use Doctrine\Bundle\DoctrineBundle\Repository\ServiceEntityRepository;
 use Doctrine\Persistence\ManagerRegistry;
 
 /**
- * @extends ServiceEntityRepository<Stats>
+ * @extends ServiceEntityRepository<Goals>
  */
-class StatsRepository extends ServiceEntityRepository
+class GoalsRepository extends ServiceEntityRepository
 {
     public function __construct(ManagerRegistry $registry)
     {
-        parent::__construct($registry, Stats::class);
+        parent::__construct($registry, Goals::class);
     }
 
 //    /**
-//     * @return Stats[] Returns an array of Stats objects
+//     * @return Goals[] Returns an array of Goals objects
 //     */
 //    public function findByExampleField($value): array
 //    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
+//        return $this->createQueryBuilder('g')
+//            ->andWhere('g.exampleField = :val')
 //            ->setParameter('val', $value)
-//            ->orderBy('s.id', 'ASC')
+//            ->orderBy('g.id', 'ASC')
 //            ->setMaxResults(10)
 //            ->getQuery()
 //            ->getResult()
 //        ;
 //    }
 
-//    public function findOneBySomeField($value): ?Stats
+//    public function findOneBySomeField($value): ?Goals
 //    {
-//        return $this->createQueryBuilder('s')
-//            ->andWhere('s.exampleField = :val')
+//        return $this->createQueryBuilder('g')
+//            ->andWhere('g.exampleField = :val')
 //            ->setParameter('val', $value)
 //            ->getQuery()
 //            ->getOneOrNullResult()

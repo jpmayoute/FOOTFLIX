@@ -2,38 +2,38 @@
 
 namespace App\Entity;
 
-use App\Repository\StatsRepository;
+use App\Repository\PlayerClubYearRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
-#[ORM\Entity(repositoryClass: StatsRepository::class)]
-class Stats
+#[ORM\Entity(repositoryClass: PlayerClubYearRepository::class)]
+class PlayerClubYear
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 255, nullable: true)]
-    private ?string $stats_name = null;
+    #[ORM\Column]
+    private ?int $year = null;
 
     /**
      * @var Collection<int, Player>
      */
-    #[ORM\ManyToMany(targetEntity: Player::class, mappedBy: 'stats')]
+    #[ORM\ManyToMany(targetEntity: Player::class, mappedBy: 'player_club_year')]
     private Collection $players;
 
     /**
-     * @var Collection<int, Number>
+     * @var Collection<int, Club>
      */
-    #[ORM\ManyToMany(targetEntity: Number::class, inversedBy: 'stats')]
-    private Collection $number;
+    #[ORM\ManyToMany(targetEntity: Club::class, mappedBy: 'player_club_year')]
+    private Collection $clubs;
 
     public function __construct()
     {
         $this->players = new ArrayCollection();
-        $this->number = new ArrayCollection();
+        $this->clubs = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -41,14 +41,14 @@ class Stats
         return $this->id;
     }
 
-    public function getStatsName(): ?string
+    public function getYear(): ?int
     {
-        return $this->stats_name;
+        return $this->year;
     }
 
-    public function setStatsName(?string $stats_name): static
+    public function setYear(int $year): static
     {
-        $this->stats_name = $stats_name;
+        $this->year = $year;
 
         return $this;
     }
@@ -65,7 +65,7 @@ class Stats
     {
         if (!$this->players->contains($player)) {
             $this->players->add($player);
-            $player->addStat($this);
+            $player->addPlayerClubYear($this);
         }
 
         return $this;
@@ -74,32 +74,35 @@ class Stats
     public function removePlayer(Player $player): static
     {
         if ($this->players->removeElement($player)) {
-            $player->removeStat($this);
+            $player->removePlayerClubYear($this);
         }
 
         return $this;
     }
 
     /**
-     * @return Collection<int, Number>
+     * @return Collection<int, Club>
      */
-    public function getNumber(): Collection
+    public function getClubs(): Collection
     {
-        return $this->number;
+        return $this->clubs;
     }
 
-    public function addNumber(Number $number): static
+    public function addClub(Club $club): static
     {
-        if (!$this->number->contains($number)) {
-            $this->number->add($number);
+        if (!$this->clubs->contains($club)) {
+            $this->clubs->add($club);
+            $club->addPlayerClubYear($this);
         }
 
         return $this;
     }
 
-    public function removeNumber(Number $number): static
+    public function removeClub(Club $club): static
     {
-        $this->number->removeElement($number);
+        if ($this->clubs->removeElement($club)) {
+            $club->removePlayerClubYear($this);
+        }
 
         return $this;
     }
