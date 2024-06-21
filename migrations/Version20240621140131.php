@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20240620172951 extends AbstractMigration
+final class Version20240621140131 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -20,16 +20,20 @@ final class Version20240620172951 extends AbstractMigration
     public function up(Schema $schema): void
     {
         // this up() migration is auto-generated, please modify it to your needs
-        $this->addSql('ALTER TABLE comment ADD user_id INT DEFAULT NULL');
+        $this->addSql('ALTER TABLE comment ADD user_id INT DEFAULT NULL, ADD player_id INT DEFAULT NULL');
         $this->addSql('ALTER TABLE comment ADD CONSTRAINT FK_9474526CA76ED395 FOREIGN KEY (user_id) REFERENCES user (id)');
+        $this->addSql('ALTER TABLE comment ADD CONSTRAINT FK_9474526C99E6F5DF FOREIGN KEY (player_id) REFERENCES player (id)');
         $this->addSql('CREATE INDEX IDX_9474526CA76ED395 ON comment (user_id)');
+        $this->addSql('CREATE INDEX IDX_9474526C99E6F5DF ON comment (player_id)');
     }
 
     public function down(Schema $schema): void
     {
         // this down() migration is auto-generated, please modify it to your needs
         $this->addSql('ALTER TABLE comment DROP FOREIGN KEY FK_9474526CA76ED395');
+        $this->addSql('ALTER TABLE comment DROP FOREIGN KEY FK_9474526C99E6F5DF');
         $this->addSql('DROP INDEX IDX_9474526CA76ED395 ON comment');
-        $this->addSql('ALTER TABLE comment DROP user_id');
+        $this->addSql('DROP INDEX IDX_9474526C99E6F5DF ON comment');
+        $this->addSql('ALTER TABLE comment DROP user_id, DROP player_id');
     }
 }

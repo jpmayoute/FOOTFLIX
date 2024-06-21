@@ -3,8 +3,6 @@
 namespace App\Entity;
 
 use App\Repository\DecisifPassRepository;
-use Doctrine\Common\Collections\ArrayCollection;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: DecisifPassRepository::class)]
@@ -15,19 +13,11 @@ class DecisifPass
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(nullable: true)]
+    #[ORM\Column]
     private ?int $decisif_pass_number = null;
 
-    /**
-     * @var Collection<int, Player>
-     */
-    #[ORM\ManyToMany(targetEntity: Player::class, mappedBy: 'decisif_pass')]
-    private Collection $players;
-
-    public function __construct()
-    {
-        $this->players = new ArrayCollection();
-    }
+    #[ORM\ManyToOne(inversedBy: 'decisifPasses')]
+    private ?Player $player = null;
 
     public function getId(): ?int
     {
@@ -39,36 +29,21 @@ class DecisifPass
         return $this->decisif_pass_number;
     }
 
-    public function setDecisifPassNumber(?int $decisif_pass_number): static
+    public function setDecisifPassNumber(int $decisif_pass_number): static
     {
         $this->decisif_pass_number = $decisif_pass_number;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, Player>
-     */
-    public function getPlayers(): Collection
+    public function getPlayer(): ?Player
     {
-        return $this->players;
+        return $this->player;
     }
 
-    public function addPlayer(Player $player): static
+    public function setPlayer(?Player $player): static
     {
-        if (!$this->players->contains($player)) {
-            $this->players->add($player);
-            $player->addDecisifPass($this);
-        }
-
-        return $this;
-    }
-
-    public function removePlayer(Player $player): static
-    {
-        if ($this->players->removeElement($player)) {
-            $player->removeDecisifPass($this);
-        }
+        $this->player = $player;
 
         return $this;
     }

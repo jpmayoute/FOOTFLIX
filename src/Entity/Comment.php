@@ -15,16 +15,16 @@ class Comment
     private ?int $id = null;
 
     #[ORM\Column]
-    private ?int $Code_rating = null;
+    private ?int $code_rating = null;
 
     #[ORM\Column(type: Types::TEXT)]
     private ?string $content = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
-    private ?Player $player = null;
+    private ?User $user = null;
 
     #[ORM\ManyToOne(inversedBy: 'comments')]
-    private ?User $user = null;
+    private ?Player $player = null;
 
     public function getId(): ?int
     {
@@ -33,12 +33,12 @@ class Comment
 
     public function getCodeRating(): ?int
     {
-        return $this->Code_rating;
+        return $this->code_rating;
     }
 
-    public function setCodeRating(int $Code_rating): static
+    public function setCodeRating(int $code_rating): static
     {
-        $this->Code_rating = $Code_rating;
+        $this->code_rating = $code_rating;
 
         return $this;
     }
@@ -55,18 +55,6 @@ class Comment
         return $this;
     }
 
-    public function getPlayer(): ?Player
-    {
-        return $this->player;
-    }
-
-    public function setPlayer(?Player $player): static
-    {
-        $this->player = $player;
-
-        return $this;
-    }
-
     public function getUser(): ?User
     {
         return $this->user;
@@ -75,6 +63,18 @@ class Comment
     public function setUser(?User $user): static
     {
         $this->user = $user;
+
+        return $this;
+    }
+
+    public function getPlayer(): ?Player
+    {
+        return $this->player;
+    }
+
+    public function setPlayer(?Player $player): static
+    {
+        $this->player = $player;
 
         return $this;
     }

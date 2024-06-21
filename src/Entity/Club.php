@@ -16,24 +16,17 @@ class Club
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
-    private ?string $club_name = null;
-
-    /**
-     * @var Collection<int, Player>
-     */
-    #[ORM\ManyToMany(targetEntity: Player::class, mappedBy: 'clubs')]
-    private Collection $players;
+    private ?string $name = null;
 
     /**
      * @var Collection<int, PlayerClubYear>
      */
-    #[ORM\ManyToMany(targetEntity: PlayerClubYear::class, inversedBy: 'clubs')]
-    private Collection $player_club_year;
+    #[ORM\OneToMany(targetEntity: PlayerClubYear::class, mappedBy: 'club')]
+    private Collection $playerClubYears;
 
     public function __construct()
     {
-        $this->players = new ArrayCollection();
-        $this->player_club_year = new ArrayCollection();
+        $this->playerClubYears = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -41,41 +34,14 @@ class Club
         return $this->id;
     }
 
-    public function getClubName(): ?string
+    public function getName(): ?string
     {
-        return $this->club_name;
+        return $this->name;
     }
 
-    public function setClubName(string $club_name): static
+    public function setName(string $name): static
     {
-        $this->club_name = $club_name;
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, Player>
-     */
-    public function getPlayers(): Collection
-    {
-        return $this->players;
-    }
-
-    public function addPlayer(Player $player): static
-    {
-        if (!$this->players->contains($player)) {
-            $this->players->add($player);
-            $player->addClub($this);
-        }
-
-        return $this;
-    }
-
-    public function removePlayer(Player $player): static
-    {
-        if ($this->players->removeElement($player)) {
-            $player->removeClub($this);
-        }
+        $this->name = $name;
 
         return $this;
     }
@@ -83,15 +49,16 @@ class Club
     /**
      * @return Collection<int, PlayerClubYear>
      */
-    public function getPlayerClubYear(): Collection
+    public function getPlayerClubYears(): Collection
     {
-        return $this->player_club_year;
+        return $this->playerClubYears;
     }
 
     public function addPlayerClubYear(PlayerClubYear $playerClubYear): static
     {
-        if (!$this->player_club_year->contains($playerClubYear)) {
-            $this->player_club_year->add($playerClubYear);
+        if (!$this->playerClubYears->contains($playerClubYear)) {
+            $this->playerClubYears->add($playerClubYear);
+            $playerClubYear->setClub($this);
         }
 
         return $this;
@@ -99,7 +66,12 @@ class Club
 
     public function removePlayerClubYear(PlayerClubYear $playerClubYear): static
     {
-        $this->player_club_year->removeElement($playerClubYear);
+        if ($this->playerClubYears->removeElement($playerClubYear)) {
+            // set the owning side to null (unless already changed)
+            if ($playerClubYear->getClub() === $this) {
+                $playerClubYear->setClub(null);
+            }
+        }
 
         return $this;
     }

@@ -22,27 +22,25 @@ class Player
     #[ORM\Column(length: 255)]
     private ?string $lastname = null;
 
-    #[ORM\Column(type: Types::DATETIME_MUTABLE)]
+    #[ORM\Column(type: Types::DATE_MUTABLE)]
     private ?\DateTimeInterface $date_of_birth = null;
 
-    #[ORM\Column(length: 255)]
+    #[ORM\Column(length: 255, nullable: true)]
     private ?string $player_picture = null;
 
-    /**
-     * @var Collection<int, Goals>
-     */
-    #[ORM\ManyToMany(targetEntity: Goals::class, inversedBy: 'players')]
-    private Collection $goals;
-
-    /**
-     * @var Collection<int, DecisifPass>
-     */
-    #[ORM\ManyToMany(targetEntity: DecisifPass::class, inversedBy: 'players')]
-    private Collection $decisif_pass;
+    #[ORM\ManyToOne(inversedBy: 'players')]
+    #[ORM\JoinColumn(nullable: false)]
+    private ?Position $position = null;
 
     #[ORM\ManyToOne(inversedBy: 'players')]
     #[ORM\JoinColumn(nullable: false)]
     private ?Country $country = null;
+
+    /**
+     * @var Collection<int, PlayerClubYear>
+     */
+    #[ORM\OneToMany(targetEntity: PlayerClubYear::class, mappedBy: 'player')]
+    private Collection $playerClubYears;
 
     /**
      * @var Collection<int, Comment>
@@ -50,29 +48,17 @@ class Player
     #[ORM\OneToMany(targetEntity: Comment::class, mappedBy: 'player')]
     private Collection $comments;
 
-    #[ORM\ManyToOne(inversedBy: 'players')]
-    #[ORM\JoinColumn(nullable: false)]
-    private ?Position $position = null;
-
     /**
-     * @var Collection<int, Club>
+     * @var Collection<int, DecisifPass>
      */
-    #[ORM\ManyToMany(targetEntity: Club::class, inversedBy: 'players')]
-    private Collection $clubs;
-
-    /**
-     * @var Collection<int, PlayerClubYear>
-     */
-    #[ORM\ManyToMany(targetEntity: PlayerClubYear::class, inversedBy: 'players')]
-    private Collection $player_club_year;
+    #[ORM\OneToMany(targetEntity: DecisifPass::class, mappedBy: 'player')]
+    private Collection $decisifPasses;
 
     public function __construct()
     {
-        $this->goals = new ArrayCollection();
-        $this->decisif_pass = new ArrayCollection();
+        $this->playerClubYears = new ArrayCollection();
         $this->comments = new ArrayCollection();
-        $this->clubs = new ArrayCollection();
-        $this->player_club_year = new ArrayCollection();
+        $this->decisifPasses = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -121,57 +107,21 @@ class Player
         return $this->player_picture;
     }
 
-    public function setPlayerPicture(string $player_picture): static
+    public function setPlayerPicture(?string $player_picture): static
     {
         $this->player_picture = $player_picture;
 
         return $this;
     }
 
-    /**
-     * @return Collection<int, Goals>
-     */
-    public function getGoals(): Collection
+    public function getPosition(): ?Position
     {
-        return $this->goals;
+        return $this->position;
     }
 
-    public function addGoal(Goals $goal): static
+    public function setPosition(?Position $position): static
     {
-        if (!$this->goals->contains($goal)) {
-            $this->goals->add($goal);
-        }
-
-        return $this;
-    }
-
-    public function removeGoal(Goals $goal): static
-    {
-        $this->goals->removeElement($goal);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, DecisifPass>
-     */
-    public function getDecisifPass(): Collection
-    {
-        return $this->decisif_pass;
-    }
-
-    public function addDecisifPass(DecisifPass $decisifPass): static
-    {
-        if (!$this->decisif_pass->contains($decisifPass)) {
-            $this->decisif_pass->add($decisifPass);
-        }
-
-        return $this;
-    }
-
-    public function removeDecisifPass(DecisifPass $decisifPass): static
-    {
-        $this->decisif_pass->removeElement($decisifPass);
+        $this->position = $position;
 
         return $this;
     }
@@ -184,6 +134,36 @@ class Player
     public function setCountry(?Country $country): static
     {
         $this->country = $country;
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, PlayerClubYear>
+     */
+    public function getPlayerClubYears(): Collection
+    {
+        return $this->playerClubYears;
+    }
+
+    public function addPlayerClubYear(PlayerClubYear $playerClubYear): static
+    {
+        if (!$this->playerClubYears->contains($playerClubYear)) {
+            $this->playerClubYears->add($playerClubYear);
+            $playerClubYear->setPlayer($this);
+        }
+
+        return $this;
+    }
+
+    public function removePlayerClubYear(PlayerClubYear $playerClubYear): static
+    {
+        if ($this->playerClubYears->removeElement($playerClubYear)) {
+            // set the owning side to null (unless already changed)
+            if ($playerClubYear->getPlayer() === $this) {
+                $playerClubYear->setPlayer(null);
+            }
+        }
 
         return $this;
     }
@@ -218,62 +198,32 @@ class Player
         return $this;
     }
 
-    public function getPosition(): ?Position
-    {
-        return $this->position;
-    }
-
-    public function setPosition(?Position $position): static
-    {
-        $this->position = $position;
-
-        return $this;
-    }
-
     /**
-     * @return Collection<int, Club>
+     * @return Collection<int, DecisifPass>
      */
-    public function getClubs(): Collection
+    public function getDecisifPasses(): Collection
     {
-        return $this->clubs;
+        return $this->decisifPasses;
     }
 
-    public function addClub(Club $club): static
+    public function addDecisifPass(DecisifPass $decisifPass): static
     {
-        if (!$this->clubs->contains($club)) {
-            $this->clubs->add($club);
+        if (!$this->decisifPasses->contains($decisifPass)) {
+            $this->decisifPasses->add($decisifPass);
+            $decisifPass->setPlayer($this);
         }
 
         return $this;
     }
 
-    public function removeClub(Club $club): static
+    public function removeDecisifPass(DecisifPass $decisifPass): static
     {
-        $this->clubs->removeElement($club);
-
-        return $this;
-    }
-
-    /**
-     * @return Collection<int, PlayerClubYear>
-     */
-    public function getPlayerClubYear(): Collection
-    {
-        return $this->player_club_year;
-    }
-
-    public function addPlayerClubYear(PlayerClubYear $playerClubYear): static
-    {
-        if (!$this->player_club_year->contains($playerClubYear)) {
-            $this->player_club_year->add($playerClubYear);
+        if ($this->decisifPasses->removeElement($decisifPass)) {
+            // set the owning side to null (unless already changed)
+            if ($decisifPass->getPlayer() === $this) {
+                $decisifPass->setPlayer(null);
+            }
         }
-
-        return $this;
-    }
-
-    public function removePlayerClubYear(PlayerClubYear $playerClubYear): static
-    {
-        $this->player_club_year->removeElement($playerClubYear);
 
         return $this;
     }
