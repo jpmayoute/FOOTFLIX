@@ -54,11 +54,25 @@ class Player
     #[ORM\OneToMany(targetEntity: DecisifPass::class, mappedBy: 'player')]
     private Collection $decisifPasses;
 
+    /**
+     * @var Collection<int, Goal>
+     */
+    #[ORM\OneToMany(targetEntity: Goal::class, mappedBy: 'player')]
+    private Collection $goals;
+
+    /**
+     * @var Collection<int, Trophy>
+     */
+    #[ORM\OneToMany(targetEntity: Trophy::class, mappedBy: 'player')]
+    private Collection $trophies;
+
     public function __construct()
     {
         $this->playerClubYears = new ArrayCollection();
         $this->comments = new ArrayCollection();
         $this->decisifPasses = new ArrayCollection();
+        $this->goals = new ArrayCollection();
+        $this->trophies = new ArrayCollection();
     }
 
     public function getId(): ?int
@@ -222,6 +236,66 @@ class Player
             // set the owning side to null (unless already changed)
             if ($decisifPass->getPlayer() === $this) {
                 $decisifPass->setPlayer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Goal>
+     */
+    public function getGoals(): Collection
+    {
+        return $this->goals;
+    }
+
+    public function addGoal(Goal $goal): static
+    {
+        if (!$this->goals->contains($goal)) {
+            $this->goals->add($goal);
+            $goal->setPlayer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeGoal(Goal $goal): static
+    {
+        if ($this->goals->removeElement($goal)) {
+            // set the owning side to null (unless already changed)
+            if ($goal->getPlayer() === $this) {
+                $goal->setPlayer(null);
+            }
+        }
+
+        return $this;
+    }
+
+    /**
+     * @return Collection<int, Trophy>
+     */
+    public function getTrophies(): Collection
+    {
+        return $this->trophies;
+    }
+
+    public function addTrophy(Trophy $trophy): static
+    {
+        if (!$this->trophies->contains($trophy)) {
+            $this->trophies->add($trophy);
+            $trophy->setPlayer($this);
+        }
+
+        return $this;
+    }
+
+    public function removeTrophy(Trophy $trophy): static
+    {
+        if ($this->trophies->removeElement($trophy)) {
+            // set the owning side to null (unless already changed)
+            if ($trophy->getPlayer() === $this) {
+                $trophy->setPlayer(null);
             }
         }
 
