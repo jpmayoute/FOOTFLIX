@@ -75,4 +75,9 @@ class Position
 
         return $this;
     }
+
+    public function __toString(): string
+    {
+        return $this->position_name ?? '';
+    }
 }

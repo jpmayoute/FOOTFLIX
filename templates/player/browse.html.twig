@@ -77,15 +77,16 @@
 
                 <h2 class="text-muted fw-bold mb-4">Les joueurs/Résultats de recherche</h2>
 
+                 {% for currentPlayer in playerList %}
                 <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm bg-white position-relative">
-                    <div class="col-4 movie__poster" style="background-image: url(https://tse2.mm.bing.net/th?id=OIP.OjPrx1SxEvGkCEJdRFjx7AHaEK&pid=Api&P=0&h=180);">
+                    <div class="col-4 movie__poster" style="background-image: url({{ currentPlayer.PlayerPicture }}">
                         <img src="{{ asset('/img/poster-square-placeholder.png') }}" class="img-fluid">
                         <!-- img src="https://m.media-amazon.com/images/M/MV5BNThmZGY4NzgtMTM4OC00NzNkLWEwNmEtMjdhMGY5YTc1NDE4XkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg" class="img-fluid" -->
                     </div>
                     <div class="col-8 p-4 d-flex flex-column position-static">
-                        <strong class="d-inline-block mb-2 text-primary">Attaquant</strong>
-                        <h3 class="mb-1">Cristiano RONALDO</h3>
-                        <div class="mb-1 text-muted">5 février 1985</div>
+                        <strong class="d-inline-block mb-2 text-primary">{{ currentPlayer.position }}</strong>
+                        <h3 class="mb-1">{{ currentPlayer.firstname }} {{ currentPlayer.lastname }}</h3>
+                        <div class="mb-1 text-muted">{{ currentPlayer.DateOfBirth|date('Y-m-d') }}</div>
             
                         <div class="d-flex" style="color: orange;">
                             <i class="bi bi-star-fill"></i>
@@ -100,33 +101,9 @@
                         </a>
                     </div>
                 </div>
-
-                <div class="row g-0 border rounded overflow-hidden flex-md-row mb-4 shadow-sm bg-white position-relative">
-                    <div class="col-4 movie__poster" style="background-image: url(https://e0.365dm.com/20/09/2048x1152/skysports-antonio-rudiger_5105892.jpg?20200923162811);">
-                        <!-- img src="https://m.media-amazon.com/images/M/MV5BYTRiNDQwYzAtMzVlZS00NTI5LWJjYjUtMzkwNTUzMWMxZTllXkEyXkFqcGdeQXVyNDIzMzcwNjc@._V1_SX300.jpg"
-                            class="img-fluid" -->
-                        <img src="{{ asset('/img/poster-square-placeholder.png') }}" alt="">
-                    </div>
-                    <div class="col-8 p-4 d-flex flex-column position-static">
-                        <strong class="d-inline-block mb-2 text-success">Défenseur Central</strong>
-                        <h4 class="mb-1">Antonio RUDIGER</h4>
-                        <div class="mb-1 text-muted">3 mars 1993</div>
-        
-                        <div class="d-flex" style="color: orange;">
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-fill"></i>
-                            <i class="bi bi-star-half"></i>
-                            <i class="bi bi-star"></i>
-                            <span class="ps-1">3.7</span>
-                        </div>
-                        <a href="" class="fs-1 mt-3 text-danger align-self-start">
-                            <i class="bi bi-arrow-right-square"></i>
-                        </a>
-                        
-                    </div>
-                </div>
+                {% endfor %}
             </div>
+                
 
             <nav class="col-lg-9 offset-lg-3">
                 <ul class="pagination">
