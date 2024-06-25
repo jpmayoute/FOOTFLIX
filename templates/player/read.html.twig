@@ -16,7 +16,7 @@
             <div class="collapse navbar-collapse" id="navbarSupportedContent">
                 <ul class="navbar-nav me-auto mb-2 mb-lg-0">
                     <li class="nav-item">
-                        <a class="nav-link active" href="#"><i class="bi bi-film"></i> Liste des joueurs </a>
+                        <a class="nav-link active" href="{{ path('app_player_browse') }}"><i class="bi bi-film"></i> Liste des joueurs </a>
                     </li>
                 </ul>
                 <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
@@ -59,27 +59,24 @@
                 <div
                     class="row g-0 border rrrounded overflow-hidden flex-md-row align-items-start mb-4 shadow-smmm position-relative">
                     <div class="col-4 movie__poster img-thumbnail"
-                        style="background-image: url(https://wallpaper.forfun.com/fetch/09/09041aab4992f68071d4a135ac557725.jpeg?h=900&r=0.5);">
+                        style="background-image: url({{ player.PlayerPicture }}">
                         <img src="{{ asset('/img/poster-placeholder.png') }}" class="img-fluid">
                         <!-- img src="https://m.media-amazon.com/images/M/MV5BNThmZGY4NzgtMTM4OC00NzNkLWEwNmEtMjdhMGY5YTc1NDE4XkEyXkFqcGdeQXVyMTQxNzMzNDI@._V1_SX300.jpg" class="img-fluid" -->
                     </div>
 
                     <div class="col-8 p-4 d-flex flex-column position-static bg-light">
                         <a href="" class="movie__favorite fs-1 my-2 mx-3 link-danger"><i class="bi bi-bookmark-plus"></i></a>
-                        <h3 class="mb-1">Cristiano RONALDO</h3>
-                        <div class="mb-1 text-muted">5 février 1985</div>
-                        <div class="mb-1 text-muted">Portugal</div>
+                        <h3 class="mb-1">{{ player.firstname }} {{ player.lastname }}</h3>
+                        <div class="mb-1 text-muted">{{ player.DateOfBirth|date('Y-m-d') }}</div>
+                        <div class="mb-1 text-muted">{{ player.Country }}</div>
                         <p>
-                            <span class="badge bg-warning text-dark">Attaquant</span>
+                            <span class="badge bg-warning text-dark">{{ player.position }}</span>
                         </p>
                         <strong>Club :</strong>
                     <ul class="d-flex flex-column flex-wrap list-unstyled justify-content-center">
-                        <li >Sporting Portugal 1997-2003</li>
-                        <li >Manchester United 2003-2009</li>
-                        <li >Réal Madrid 2009-2018</li>
-                        <li >Juventus Turin 2018-2021</li>
-                        <li >Manchester United 2021-2022</li>
-                        <li >All-Nassr depuis 2023</li>
+                     {% for playerClubYear in player.playerClubYears %}
+                        <li >{{ playerClubYear.club.name }} ({{ playerClubYear.year }})</li>
+                    {% endfor %}
                     </ul>
                         
 
@@ -94,28 +91,16 @@
 
                         <h2>Palmarès</h2>
                         <ul class="list-unstyled">
-                            <li><span class="badge bg-danger fs-6 mb-2">Ligue des Champions : 5</span><small class="ms-1">(2007/2008, 2013/2014, 2015/2016, 2016/2017, 2017/2018)</small></li>
-                            <li><span class="badge bg-danger fs-6 mb-2">Premier League : 3</span><small class="ms-1">(2006/2007, 2007/2008, 2008/2009)</small></li>
-                            <li><span class="badge bg-danger fs-6 mb-2">Liga : 2</span><small class="ms-1">(2011/2012, 2016/2017)</small></li>
-                            <li><span class="badge bg-danger fs-6 mb-2">Supercoupe d'Italie : 2</span><small class="ms-1">(2018/2019, 2020/2021)</small></li>
-                            <li><span class="badge bg-danger fs-6 mb-2">Serie A : 2</span><small class="ms-1">(2018/2019, 2019/2020)</small></li>
-                            <li><span class="badge bg-danger fs-6 mb-2">Coupe du Roi : 2</span><small class="ms-1">(2010/2011, 2013/2014)</small></li>
-                            <li><span class="badge bg-danger fs-6 mb-2">Coppa Italia : 1</span><small class="ms-1">(2020/2021)</small></li>
-                            <li><span class="badge bg-danger fs-6 mb-2">The Emirates FA Cup : 1</span><small class="ms-1">(2003/2004)</small></li>
-                            <li><span class="badge bg-danger fs-6 mb-2">Supercoupe d'Espagne : 2</span><small class="ms-1">(2012/2013, 2017/2018)</small></li>
-                            <li><span class="badge bg-danger fs-6 mb-2">League Cup : 2</span><small class="ms-1">(2005/2006, 2008/2009)</small></li>
-                            <li><span class="badge bg-danger fs-6 mb-2">Community Shield : 3</span><small class="ms-1">(2003/2004, 2007/2008, 2008/2009)</small></li>
-                            <li><span class="badge bg-danger fs-6 mb-2">Super Coupe : 1</span><small class="ms-1">(2002/2003)</small></li>
-                            <li><span class="badge bg-danger fs-6 mb-2">Super Coupe de l'UEFA : 3</span><small class="ms-1">(2014/2015, 2016/2017, 2017/2018)</small></li>
-                            <li><span class="badge bg-danger fs-6 mb-2">Coupe du Monde des Clubs : 4</span><small class="ms-1">(2008, 2014, 2016, 2017)</small></li>
-                            <li><span class="badge bg-danger fs-6 mb-2">International Champions Cup : 1</span><small class="ms-1">(2013)</small></li>
+                         {% for trophy in player.trophies %}
+                            <li><span class="badge bg-danger fs-6 mb-2">{{ trophy.trophyName }}</span><small class="ms-1">({{ trophy.year }})</small></li>
+                        {% endfor %}
                         </ul>
 
                         <dl class="row">
                             <dt class="col-sm-12">Statistiques</dt>
                             <dd class="col-sm-12">
-                                Buts (647)<br>
-                                Passes décisives (94)<br>
+                                Buts ({{ player.goals | length ? player.goals[0].goalsNumber : 0 }})<br>
+                                Passes décisives ({{ player.decisifPasses | length ? player.decisifPasses[0].decisifPassNumber : 0 }})<br>
                             </dd>
                         </dl>
 

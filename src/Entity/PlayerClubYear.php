@@ -64,4 +64,5 @@ class PlayerClubYear
 
         return $this;
     }
+
 }
